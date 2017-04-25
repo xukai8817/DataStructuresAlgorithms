@@ -3,6 +3,7 @@ package com.edu.chapter.twenty_six.day0416;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * @author xukai
@@ -136,6 +137,96 @@ public class BinaryTree<E extends Comparable<E>> extends AbstractTree<E>{
         }
     }
     
+    
+    /**
+     * 栈实现中序遍历
+     * <p>Title: nonRecursivePostorder</p>
+     * <p>author : xukai</p>
+     * <p>date : 2017年4月25日 下午10:28:36</p>
+     */
+    public void nonRecursiveInorder() {
+    	ArrayList<TreeNode<E>> list = new ArrayList<>();
+    	Stack<TreeNode<E>> stack = new Stack<>();
+    	if (this.root == null) return ;
+    	stack.push(root);
+    	while (!stack.isEmpty()) {
+    		TreeNode<E> node = stack.peek();
+    		
+    		if (node.left != null && !list.contains(node.left)) {
+    			stack.push(node.left);
+    		} else {
+    			stack.pop();
+    			list.add(node);
+    			if (node.right != null) {
+    				stack.push(node.right);
+    			}
+    		}
+    		
+    		for (int i = 0; i < list.size(); i++)
+    			System.out.print(((TreeNode<E>)list.get(i)).element + " ");
+    		System.out.print("\n");
+    	}
+    }
+    
+    /**
+     * 栈实现前序遍历<>
+     * <p>Title: nonRecursivePreorder</p>
+     * <p>author : xukai</p>
+     * <p>date : 2017年4月25日 下午6:28:42</p>
+     */
+    public void nonRecursivePreorder() {
+    	ArrayList<TreeNode<E>> list = new ArrayList<>();
+    	Stack<TreeNode<E>> stack = new Stack<>();
+    	if (this.root == null)	return;
+    	stack.push(this.root);
+    	
+    	while (!stack.isEmpty()) {
+    		TreeNode<E> node = stack.pop();
+    		list.add(node);
+    		
+    		if (node.right != null	&& !list.contains(node.right)) {
+    			stack.push(node.right);
+    		}
+    		
+    		if (node.left != null	&& !list.contains(node.left)) {
+    			stack.push(node.left);
+    		}
+    		
+    		for (int i = 0; i < list.size(); i++)
+    			System.out.print(((TreeNode<E>)list.get(i)).element + " ");
+    		System.out.print("\n");
+    	}
+    }
+    
+    /**
+     * 栈实现后序遍历
+     * <p>Title: nonRecursivePostorder</p>
+     * <p>author : xukai</p>
+     * <p>date : 2017年4月25日 下午10:28:36</p>
+     */
+    public void nonRecursivePostorder() {
+    	ArrayList<TreeNode<E>> list = new ArrayList<>();
+    	Stack<TreeNode<E>> stack = new Stack<>();
+    	if (this.root == null) return ;
+    	stack.push(root);
+    	while (!stack.isEmpty()) {
+    		TreeNode<E> node = stack.peek();
+    		
+    		if (node.left != null && !list.contains(node.left)) {
+    			stack.push(node.left);
+    		} else if (node.right != null && !list.contains(node.right)) {
+    			stack.push(node.right);
+    		} else {
+    			stack.pop();
+    			list.add(node);
+    		}
+    		
+    		for (int i = 0; i < list.size(); i++)
+    			System.out.print(((TreeNode<E>)list.get(i)).element + " ");
+    		System.out.print("\n");
+    	}
+    }
+    
     /**
      * 
      * @return 深度
@@ -162,6 +253,41 @@ public class BinaryTree<E extends Comparable<E>> extends AbstractTree<E>{
              }
          */
     }
+    
+    /**
+     * 获取叶子结点个数
+     * <p>Title: getNumberOfLeaves</p>
+     * <p>author : xukai</p>
+     * <p>date : 2017年4月25日 下午11:06:20</p>
+     * @param tree
+     * @return
+     */
+    public int getNumberOfLeaves(TreeNode<E> tree) {
+    	if (tree == null) {
+    		return 0;
+    	} else if (tree.left == null && tree.right == null) {
+    		return 1;
+    	} else {
+    		return getNumberOfLeaves(tree.left) + getNumberOfLeaves(tree.right);
+    	}
+    }
+    
+    /**
+     * 获取非叶子结点个数
+     * <p>Title: getNumberOfNonLeaves</p>
+     * <p>author : xukai</p>
+     * <p>date : 2017年4月25日 下午11:08:50</p>
+     * @param root
+     * @return
+     */
+	public int getNumberOfNonLeaves(TreeNode<E> root) {
+		if (root == null)
+			return 0;
+		if ((root.left != null) || (root.right != null)) {
+			return 1 + getNumberOfNonLeaves(root.left) + getNumberOfNonLeaves(root.right);
+		}
+		return 0;
+	}
 
     /**
      * 结点类

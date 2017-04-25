@@ -20,6 +20,10 @@ public class DisplayBinaryTree extends JApplet {
         BinaryTree<Integer> intTree = new BinaryTree<>(numbers);
         System.out.println(intTree.size + "," +intTree.height());
         System.out.println(intTree.isFullBinaryTree());
+//        intTree.nonRecursivePreorder();
+//        intTree.nonRecursivePostorder();
+//        intTree.nonRecursiveInorder();
+        System.out.println(intTree.getNumberOfLeaves(intTree.root));
         add(new TreeControl(intTree));
     }
     
