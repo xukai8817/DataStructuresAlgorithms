@@ -49,8 +49,8 @@ public class BinaryTree<E extends Comparable<E>> extends AbstractTree<E>{
         if (root == null) {
             root = createNewNode(e);
         } else {
-            TreeNode<E> parent = null; 
-            TreeNode<E> current = root; // insert-node
+            TreeNode<E> parent = null; // 插入元素的父结点
+            TreeNode<E> current = root;
             while (current != null) {
                 if (e.compareTo(current.element) < 0) {
                     parent = current;
@@ -164,7 +164,7 @@ public class BinaryTree<E extends Comparable<E>> extends AbstractTree<E>{
     }
 
     /**
-     * 节点类
+     * 结点类
      * @author xukai
      * @date 2017年4月18日 上午10:52:46
      * @param <E>
@@ -288,20 +288,20 @@ public class BinaryTree<E extends Comparable<E>> extends AbstractTree<E>{
             }
         } else {
             // current-node exist left-node
-            TreeNode<E> parentOfRightMost = current;
-            TreeNode<E> rightMost = current.left;   // current-node.Max(.right-node)
-            while (rightMost.right != null) {
-                parentOfRightMost = rightMost;
-                rightMost = rightMost.right;
+            TreeNode<E> parentOfRightMax = current;
+            TreeNode<E> rightMax = current.left;   // current-node.Max(.right-node)
+            while (rightMax.right != null) {
+                parentOfRightMax = rightMax;
+                rightMax = rightMax.right;
             }
         
-            current.element = rightMost.element;
+            current.element = rightMax.element;
             
-            if (parentOfRightMost.right == rightMost) {
-                parentOfRightMost.right = rightMost.left;
+            if (parentOfRightMax.right == rightMax) {
+                parentOfRightMax.right = rightMax.left;
             } else {
                 // parentOfRightMost == current is true; 
-                parentOfRightMost.left = rightMost.left;
+                parentOfRightMax.left = rightMax.left;
             }
         }
         
