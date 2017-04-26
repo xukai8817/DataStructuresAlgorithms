@@ -1,6 +1,7 @@
 package com.edu.chapter.twenty_six.day0416;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import com.edu.chapter.twenty_six.day0416.BinaryTree.TreeNode;
 
@@ -41,6 +42,15 @@ public class TestBinaryTree {
         intTree.breadthFirstTraversal();
         System.out.println(intTree.height());
         System.out.println(intTree.isFullBinaryTree());
+        
+        ListIterator<Integer> i = intTree.listIterator();
+        while (i.hasNext()) {
+        	System.out.print(i.next() + " ");
+        }
+        
+        while (i.hasPrevious()) {
+        	System.out.print(i.previous() + " ");
+        }
     }
     
 }

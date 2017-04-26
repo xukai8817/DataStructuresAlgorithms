@@ -3,6 +3,7 @@ package com.edu.chapter.twenty_six.day0416;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Stack;
 
 /**
@@ -435,6 +436,11 @@ public class BinaryTree<E extends Comparable<E>> extends AbstractTree<E>{
         return true;
     }
 
+    public void clear() {
+        root = null;
+        size = 0;
+    }
+    
     @Override
     public Iterator<E> iterator() {
         return inorderIterator();
@@ -485,8 +491,79 @@ public class BinaryTree<E extends Comparable<E>> extends AbstractTree<E>{
         }
     }
     
-    public void clear() {
-        root = null;
-        size = 0;
+    public ListIterator<E> listIterator() {
+    	return new MyListIterator();
     }
+    
+    class MyListIterator implements ListIterator<E> {
+
+    	private ArrayList<E> list = new ArrayList<>();
+        
+        private int current = 0;
+        
+        public MyListIterator() {
+            inorder();
+        }
+        
+        private void inorder() {
+            inorder(root);
+        }
+        
+        private void inorder(TreeNode<E> root) {
+            if (root == null) return;
+            inorder(root.left);
+            this.list.add(root.element);
+            inorder(root.right);
+        }
+    	
+		@Override
+		public boolean hasNext() {
+			return (this.current < this.list.size());
+		}
+
+		@Override
+		public E next() {
+			return this.list.get(this.current++);
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			return current > 0;
+		}
+
+		@Override
+		public E previous() {
+			this.current -= 1;
+			return this.list.get(this.current);
+		}
+
+		@Override
+		public int nextIndex() {
+			return current++;
+		}
+
+		@Override
+		public int previousIndex() {
+			return current--;
+		}
+
+		@Override
+		public void remove() {
+            delete(this.list.get(current));
+            this.list.clear();
+            inorder();
+		}
+
+		@Override
+		public void set(E e) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void add(E e) {
+			// TODO Auto-generated method stub
+		}
+		
+	}
+    
 }

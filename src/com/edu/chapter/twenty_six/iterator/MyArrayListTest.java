@@ -2,7 +2,7 @@ package com.edu.chapter.twenty_six.iterator;
 
 import java.util.Iterator;
 
-public class MyArrayListjTest {
+public class MyArrayListTest {
 
 	public static void main(String[] args) {
 		MyArrayList<String> list = new MyArrayList<String>();
