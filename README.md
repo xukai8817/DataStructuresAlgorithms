@@ -1,2 +1,2 @@
-# BinarySerachTree
-二叉查找树
+# DataStructuresAlgorithms
+数据结构和算法
