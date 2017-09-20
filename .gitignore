@@ -1,0 +1,15 @@
+*~
+.DS_Store
+.classpath
+.settings
+.project
+.idea
+target
+*.iml
+classes
+lib
+.bpmn
+/node_modules
+.arcconfig
+data
+/bin/

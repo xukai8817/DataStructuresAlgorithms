@@ -1,4 +1,4 @@
-package com.edu.chapter.twenty_six.day0416;
+package com.edu.tree.binary.search;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.edu.chapter.twenty_six.day0416.BinaryTree.TreeNode;
+import com.edu.tree.binary.search.BinaryTree.TreeNode;
 
 /**
  * @author xukai

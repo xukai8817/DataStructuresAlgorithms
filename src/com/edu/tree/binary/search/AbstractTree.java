@@ -1,4 +1,4 @@
-package com.edu.chapter.twenty_six.day0416;
+package com.edu.tree.binary.search;
 
 import java.util.Iterator;
 
