@@ -166,4 +166,104 @@ public class RBTreeNode<E> extends Node<E> {
 		}
 	}
 
+	public static <E> RBTreeNode<E> balanceDeletion(RBTreeNode<E> root, RBTreeNode<E> x) {
+		for (RBTreeNode<E> xp, xpl, xpr;;) {
+			// x为空或根
+			if (x == null || x == root)
+				return root;
+			else if ((xp = x.parent) == null) {
+				// x为根结点
+				System.out.println("x=" + x.e + ",x为根结点");
+				x.red = false;
+				return x;
+			} else if (x.red) {
+				// x为红色
+				return root;
+			}
+			// x:left-child
+			else if ((xpl = xp.left) == x) {
+				// x' brother is red
+				if ((xpr = xp.right) != null && xpr.red) {
+					xpr.red = false;
+					xp.red = true;
+					root = rotateLeft(root, xp);
+					xpr = ((xp = x.parent) == null) ? null : xp.right;
+				}
+
+				if (xpr == null)
+					x = xp;
+				else {
+					// x' brother is black
+					RBTreeNode<E> sl = xpr.left, sr = xpr.right;
+					if ((sr == null || !sr.red) && (sl == null || !sl.red)) {
+						// 侄结点同时为黑结点
+						xpr.red = true;
+					} else {
+						// 侄结点case
+						// 右侄子结点为空或为黑结点,case3
+						if (sr == null || !sr.red) {
+							if (sl != null)
+								sl.red = false;
+
+							xpr.red = true;
+							root = rotateRight(root, xpr);
+							xpr = (xp = x.parent) == null ? null : xp.parent;
+						}
+						if (xpr != null) {
+							xpr.red = (xp == null) ? false : xp.red;
+							if ((sr = xpr.right) != null)
+								sr.red = false;
+						}
+						if (xp != null) {
+							xp.red = false;
+							root = rotateLeft(root, xp);
+						}
+						x = root;
+					}
+				}
+			}
+			// x:right-child
+			else {
+				if (xpl != null && xpl.red) {
+                    xpl.red = false;
+                    xp.red = true;
+                    root = rotateRight(root, xp);
+                    xpl = (xp = x.parent) == null ? null : xp.left;
+                }
+                if (xpl == null)
+                    x = xp;
+                else {
+                	RBTreeNode<E> sl = xpl.left, sr = xpl.right;
+                    if ((sl == null || !sl.red) &&
+                        (sr == null || !sr.red)) {
+                        xpl.red = true;
+                        x = xp;
+                    }
+                    else {
+                        if (sl == null || !sl.red) {
+                            if (sr != null)
+                                sr.red = false;
+                            xpl.red = true;
+                            root = rotateLeft(root, xpl);
+                            xpl = (xp = x.parent) == null ?
+                                null : xp.left;
+                        }
+                        if (xpl != null) {
+                            xpl.red = (xp == null) ? false : xp.red;
+                            if ((sl = xpl.left) != null)
+                                sl.red = false;
+                        }
+                        if (xp != null) {
+                            xp.red = false;
+                            root = rotateRight(root, xp);
+                        }
+                        x = root;
+                    }
+                }
+			}
+
+			return root;
+		}
+	}
+
 }

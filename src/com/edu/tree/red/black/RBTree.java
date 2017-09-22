@@ -22,10 +22,31 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 
 	@Override
 	public boolean search(E e) {
-		// TODO Auto-generated method stub
+		RBTreeNode<E> cursor = this.root;
+		while (cursor != null) {
+			if (e.compareTo(cursor.e) < 0)
+				cursor = cursor.left;
+			else if (e.compareTo(cursor.e) > 0)
+				cursor = cursor.right;
+			else
+				return true;
+		}
 		return false;
 	}
 
+	public RBTreeNode<E> find(E e) {
+		RBTreeNode<E> cursor = this.root;
+		while (cursor != null) {
+			if (e.compareTo(cursor.e) < 0)
+				cursor = cursor.left;
+			else if (e.compareTo(cursor.e) > 0)
+				cursor = cursor.right;
+			else
+				return cursor;
+		}
+		return null;
+	}
+	
 	@Override
 	public boolean insert(E e) {
 		RBTreeNode<E> newNode = createRBTreeNode(e);
@@ -54,7 +75,7 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 		}
 		newNode.parent = parent;
 		root = RBTreeNode.balanceInsertion(root, newNode);
-		size ++;
+		size++;
 		return true;
 	}
 
@@ -64,8 +85,12 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 
 	@Override
 	public boolean delete(E e) {
-		// TODO Auto-generated method stub
-		return false;
+		RBTreeNode<E> oldNode = find(e);
+		root = RBTreeNode.balanceDeletion(root, oldNode);
+		
+		// 删除
+//		oldNode.parent = null;
+		return true;
 	}
 
 	@Override
