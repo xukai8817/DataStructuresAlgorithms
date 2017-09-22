@@ -24,7 +24,7 @@ public class RBTreeJPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -3089035388076544312L;
 
-	private RBTree<String> tree;
+	private RBTree<Integer> tree;
 
 	private JTextField jtfKey = new JTextField(5);
 
@@ -34,7 +34,7 @@ public class RBTreeJPanel extends JPanel {
 
 	private JButton jbtDelete = new JButton("Delete");
 
-	public RBTreeJPanel(RBTree<String> tree) {
+	public RBTreeJPanel(RBTree<Integer> tree) {
 		this.tree = tree;
 		setUI();
 	}
@@ -53,7 +53,7 @@ public class RBTreeJPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String key = jtfKey.getText();
+				Integer key = Integer.valueOf(jtfKey.getText());
 				if (tree.search(key)) {
 					JOptionPane.showMessageDialog(null, key + " is already in the tree");
 				} else {
@@ -67,7 +67,7 @@ public class RBTreeJPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String key = jtfKey.getText();
+				Integer key = Integer.valueOf(jtfKey.getText());
 				if (!tree.search(key)) {
 					JOptionPane.showMessageDialog(null, key + " is not in the tree");
 				} else {
@@ -93,14 +93,13 @@ public class RBTreeJPanel extends JPanel {
 			}
 		}
 
-		private void displayTree(Graphics g, RBTreeNode<String> current, int x, int y, int hGap) {
+		private void displayTree(Graphics g, RBTreeNode<Integer> current, int x, int y, int hGap) {
 			setColor(current, g);
 			// 圆圈
 			g.drawOval(x - radius, y - radius, 2 * radius, 2 * radius);
 			// 内容
 			setColor(current, g);
-			g.drawString(current.e + "", x - 6, y + 4);
-
+            g.drawString(current.e + "", x - 6, y + 4);
 			g.setColor(Color.BLUE);
 			if (current.left != null) {
 				connectLeftChild(g, x - hGap, y + vGap, x, y);
@@ -113,7 +112,7 @@ public class RBTreeJPanel extends JPanel {
 			}
 		}
 
-		private void setColor(RBTreeNode<String> root, Graphics g) {
+		private void setColor(RBTreeNode<Integer> root, Graphics g) {
 			if (root.red)
 				g.setColor(Color.RED);
 			else 

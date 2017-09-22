@@ -85,48 +85,46 @@ public class RBTreeNode<E> extends Node<E>{
 	 * @return
 	 */
 	public static <E> RBTreeNode<E> balanceInsertion(RBTreeNode<E> root, RBTreeNode<E> x) {
+		// 1.遍历结点必为红结点
 		x.red = true;
 		for (RBTreeNode<E> xp, xpp, xppl, xppr;;) {
+			// 2-1.空树
 			if ((xp = x.parent) == null) {
 				x.red = false;
 				return x;
-			} else if (!xp.red || (xpp = xp.parent) == null)
+			} 
+			// 2-2.xp为黑结点 || xpp = null
+			else if (!xp.red || (xpp = xp.parent) == null) {
+				// xp为红结点，需要判断xpp是否为空 why
+				if (xp.red && xp.parent == null)
+					System.out.println("xp.red && xpp is null, xp is root");
 				return root;
+			}
+			// 2-3-1.xp is left-child
+			// case1: a -> b
 			if (xp == (xppl = xpp.left)) {
+				// 2-3-1-1.x uncle is red
 				if ((xppr = xpp.right) != null && xppr.red) {
 					xppr.red = false;
 					xp.red = false;
 					xpp.red = true;
 					x = xpp;
-				} else {
+				} 
+				// 2-3-1-2.x uncle is black
+				else {
+					// x is left-child
+					// case2: b -> c
 					if (x == xp.right) {
-						root = rotateLeft(root, x = xp);
+						rotateLeft(root, x = xp);
 						xpp = (xp = x.parent) == null ? null : xp.parent;
 					}
+					// x is right-child
+					// case3: c -> d
 					if (xp != null) {
 						xp.red = false;
 						if (xpp != null) {
 							xpp.red = true;
-							root = rotateRight(root, xpp);
-						}
-					}
-				}
-			} else {
-				if (xppl != null && xppl.red) {
-					xppl.red = false;
-					xp.red = false;
-					xpp.red = true;
-					x = xpp;
-				} else {
-					if (x == xp.left) {
-						root = rotateRight(root, x = xp);
-						xpp = (xp = x.parent) == null ? null : xp.parent;
-					}
-					if (xp != null) {
-						xp.red = false;
-						if (xpp != null) {
-							xpp.red = true;
-							root = rotateLeft(root, xpp);
+							rotateRight(root, xpp);
 						}
 					}
 				}

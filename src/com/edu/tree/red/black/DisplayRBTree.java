@@ -15,8 +15,8 @@ public class DisplayRBTree extends JApplet {
 	private static final long serialVersionUID = 5329743141395531185L;
 
 	public DisplayRBTree() {
-		String[] array = { "x"};
-		RBTree<String> tree = new RBTree<String>(array);
+		Integer[] array = {11};
+		RBTree<Integer> tree = new RBTree<Integer>(array);
 		System.out.println(tree);
 		add(new RBTreeJPanel(tree));
 	}
