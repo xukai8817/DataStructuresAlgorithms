@@ -1,12 +1,11 @@
 package com.edu.tree.red.black;
 
 /**
- * @author xukai
- * 红黑树
+ * @author xukai 红黑树
  * @param <K>
  * @param <V>
  */
-public class RBTreeNode<E> extends Node<E>{
+public class RBTreeNode<E> extends Node<E> {
 
 	RBTreeNode<E> parent;
 	RBTreeNode<E> left;
@@ -28,8 +27,11 @@ public class RBTreeNode<E> extends Node<E>{
 
 	/**
 	 * 左旋
-	 * @param root 	根结点
-	 * @param c		当前结点
+	 * 
+	 * @param root
+	 *            根结点
+	 * @param c
+	 *            当前结点
 	 * @return root
 	 */
 	static <E> RBTreeNode<E> rotateLeft(RBTreeNode<E> root, RBTreeNode<E> c) {
@@ -40,7 +42,7 @@ public class RBTreeNode<E> extends Node<E>{
 				rl.parent = c;
 			// 2.connect r and cp
 			if ((cp = r.parent = c.parent) == null)
-				(root = r).red = false;	// done if c is root
+				(root = r).red = false; // done if c is root
 			else if (cp.left == c)
 				cp.left = r;
 			else
@@ -51,11 +53,14 @@ public class RBTreeNode<E> extends Node<E>{
 		}
 		return root;
 	}
-	
+
 	/**
 	 * 右旋
-	 * @param root	根结点
-	 * @param c		当前结点
+	 * 
+	 * @param root
+	 *            根结点
+	 * @param c
+	 *            当前结点
 	 * @return
 	 */
 	static <E> RBTreeNode<E> rotateRight(RBTreeNode<E> root, RBTreeNode<E> c) {
@@ -77,11 +82,14 @@ public class RBTreeNode<E> extends Node<E>{
 		}
 		return root;
 	}
-	
+
 	/**
 	 * 平衡插入后的树
-	 * @param root	根结点
-	 * @param x		插入结点
+	 * 
+	 * @param root
+	 *            根结点
+	 * @param x
+	 *            插入结点
 	 * @return
 	 */
 	public static <E> RBTreeNode<E> balanceInsertion(RBTreeNode<E> root, RBTreeNode<E> x) {
@@ -92,7 +100,7 @@ public class RBTreeNode<E> extends Node<E>{
 			if ((xp = x.parent) == null) {
 				x.red = false;
 				return x;
-			} 
+			}
 			// 2-2.xp为黑结点 || xpp = null
 			else if (!xp.red || (xpp = xp.parent) == null) {
 				// xp为红结点，需要判断xpp是否为空 why
@@ -109,22 +117,48 @@ public class RBTreeNode<E> extends Node<E>{
 					xp.red = false;
 					xpp.red = true;
 					x = xpp;
-				} 
+				}
 				// 2-3-1-2.x uncle is black
 				else {
-					// x is left-child
+					// x is right-child
 					// case2: b -> c
 					if (x == xp.right) {
-						rotateLeft(root, x = xp);
+						root = rotateLeft(root, x = xp);
 						xpp = (xp = x.parent) == null ? null : xp.parent;
 					}
-					// x is right-child
+					// x is left-child
 					// case3: c -> d
 					if (xp != null) {
 						xp.red = false;
 						if (xpp != null) {
 							xpp.red = true;
-							rotateRight(root, xpp);
+							root = rotateRight(root, xpp);
+						}
+					}
+				}
+			}
+			// 2-3-2.xp is right-child
+			else {
+				// 2-3-2-1.x uncle is red
+				if ((xppl = xpp.left) != null && xppl.red) {
+					xppl.red = false;
+					xp.red = false;
+					xpp.red = true;
+					x = xpp;
+				}
+				// 2-3-2-2.x uncle is black
+				else {
+					// x is left-child
+					if (x == xp.left) {
+						root = rotateRight(root, x = xp);
+						xpp = (xp = x.parent) == null ? null : xp.parent;
+					}
+					// x is right-child
+					if (xp != null) {
+						xp.red = false;
+						if (xpp != null) {
+							xpp.red = true;
+							root = rotateLeft(root, xpp);
 						}
 					}
 				}
