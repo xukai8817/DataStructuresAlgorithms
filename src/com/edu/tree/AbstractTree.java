@@ -1,4 +1,4 @@
-package com.edu.tree.binary.search;
+package com.edu.tree;
 
 import java.util.Iterator;
 
