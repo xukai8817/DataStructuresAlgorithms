@@ -1,5 +1,6 @@
 package com.edu.tree.red.black;
 
+import com.alibaba.fastjson.JSONObject;
 import com.edu.tree.AbstractTree;
 
 /**
@@ -46,7 +47,7 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean insert(E e) {
 		RBTreeNode<E> newNode = createRBTreeNode(e);
@@ -79,18 +80,78 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 		return true;
 	}
 
-	public RBTreeNode<E> createRBTreeNode(E e) {
-		return new RBTreeNode<E>(e);
-	}
-
 	@Override
 	public boolean delete(E e) {
-		RBTreeNode<E> oldNode = find(e);
-		root = RBTreeNode.balanceDeletion(root, oldNode);
+		RBTreeNode<E> x, y, z;
 		
-		// 删除
-//		oldNode.parent = null;
+		if ((y = z = find(e)) == null)
+			return false;
+
+		boolean yRed = y.red;
+
+		if (z.left == null) {
+			x = z.right;
+			rbTransplant(root, z, z.right);
+		} else if (z.right == null) {
+			x = z.left;
+			rbTransplant(root, z, z.left);
+		} else {
+			y = this.getMinNode(z.right);
+			x = y.right;
+			if (y.parent == z)
+				// TODO
+				if (x != null)
+					x.parent = y;
+			else {
+				rbTransplant(root, y, y.right);
+				y.right = z.right;
+				// TODO
+				if (y.right != null)
+					y.right.parent = y;
+			}
+			rbTransplant(root, z, y);
+			y.left = z.left;
+			y.left.parent = y;
+			y.red = z.red;
+		}
+		if (!yRed)
+			root = RBTreeNode.balanceDeletion(root, x);
+		size--;
 		return true;
+	}
+
+	/**
+	 * 用以newTree为根的树替换以oldTree为根的树,即连接oldTree.parent和newTree<br>
+	 * @param root	根结点
+	 * @param oldTree		
+	 * @param newTree
+	 */
+	private void rbTransplant(RBTreeNode<E> root, RBTreeNode<E> oldTree, RBTreeNode<E> newTree) {
+		if (oldTree.parent == null)
+			root = newTree;
+		else if (oldTree == oldTree.parent.left)
+			oldTree.parent.left = newTree;
+		else
+			oldTree.parent.right = newTree;
+		
+		if (newTree != null)
+			newTree.parent = oldTree.parent;
+	}
+
+	/**
+	 * 获取该结点下最小结点
+	 * @param node
+	 * @return
+	 */
+	public RBTreeNode<E> getMinNode(RBTreeNode<E> node) {
+		RBTreeNode<E> minNode = node;
+		if (minNode == null)
+			return null;
+
+		while (minNode.left != null) {
+			minNode = minNode.left;
+		}
+		return minNode;
 	}
 
 	@Override
@@ -102,4 +163,27 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 		return root;
 	}
 
+	public RBTreeNode<E> createRBTreeNode(E e) {
+		return new RBTreeNode<E>(e);
+	}
+	
+	public JSONObject toJSON() {
+		return recusiveJSON(this.root);
+	}
+	
+	private JSONObject recusiveJSON(RBTreeNode<E> node) {
+		if (node == null)
+			return null;
+		JSONObject object = new JSONObject();
+		object.put("value", node.e);
+		if (node.left != null) {
+			object.put("left", recusiveJSON(node.left));
+		}
+		if (node.right != null) {
+			object.put("right", recusiveJSON(node.right));
+		}
+		
+		return object;
+	}
+	
 }

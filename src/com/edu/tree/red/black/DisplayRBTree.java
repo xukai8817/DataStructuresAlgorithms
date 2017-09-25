@@ -18,10 +18,12 @@ public class DisplayRBTree extends JApplet {
 	private static final long serialVersionUID = 5329743141395531185L;
 
 	public DisplayRBTree() {
-		/*
-		 * Integer[] array = new Integer[10]; for (int i = 0; i < array.length;
-		 * i++) { array[i] = 9 - i; }
-		 */
+		
+/*		Integer[] array = new Integer[10];
+		for (int i = 0; i < array.length; i++) {
+			array[i] = (int) (Math.random() * 20);
+		}*/
+		
 		Integer[] array = { 11, 2, 22, 1, 13,  19, 12, 17 };
 		RBTree<Integer> tree = new RBTree<Integer>(array);
 		System.out.println(tree);

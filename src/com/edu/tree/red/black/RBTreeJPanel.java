@@ -59,6 +59,7 @@ public class RBTreeJPanel extends JPanel {
 				} else {
 					tree.insert(key);
 					view.repaint();
+					jtfKey.setText("");
 				}
 			}
 		});
