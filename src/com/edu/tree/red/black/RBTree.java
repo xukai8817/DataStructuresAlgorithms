@@ -91,25 +91,27 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 
 		if (z.left == null) {
 			x = z.right;
-			rbTransplant(root, z, z.right);
+			rbTransplant(z, z.right);
 		} else if (z.right == null) {
 			x = z.left;
-			rbTransplant(root, z, z.left);
+			rbTransplant(z, z.left);
 		} else {
 			y = this.getMinNode(z.right);
+			yRed = y.red;
 			x = y.right;
-			if (y.parent == z)
+			if (y.parent == z) {
 				// TODO
 				if (x != null)
 					x.parent = y;
+			}
 			else {
-				rbTransplant(root, y, y.right);
+				rbTransplant( y, y.right);
 				y.right = z.right;
 				// TODO
 				if (y.right != null)
 					y.right.parent = y;
 			}
-			rbTransplant(root, z, y);
+			rbTransplant(z, y);
 			y.left = z.left;
 			y.left.parent = y;
 			y.red = z.red;
@@ -126,9 +128,10 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 	 * @param oldTree		
 	 * @param newTree
 	 */
-	private void rbTransplant(RBTreeNode<E> root, RBTreeNode<E> oldTree, RBTreeNode<E> newTree) {
-		if (oldTree.parent == null)
-			root = newTree;
+	private void rbTransplant(RBTreeNode<E> oldTree, RBTreeNode<E> newTree) {
+		if (oldTree.parent == null) {
+			this.root = newTree;
+		}
 		else if (oldTree == oldTree.parent.left)
 			oldTree.parent.left = newTree;
 		else
