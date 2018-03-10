@@ -6,16 +6,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>../src</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>src</directory>
+				<directory>../src</directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
 			</resource>
 			<resource>
-				<directory>resource</directory>
+				<directory></directory>
 				<excludes>
 					<exclude>**/*.java</exclude>
 				</excludes>
