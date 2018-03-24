@@ -1,4 +1,4 @@
-package com.edu.other.test;
+package main.java.edu.other.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;

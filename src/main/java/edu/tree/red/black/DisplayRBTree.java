@@ -1,4 +1,4 @@
-package com.edu.tree.red.black;
+package edu.tree.red.black;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;

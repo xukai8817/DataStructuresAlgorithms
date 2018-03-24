@@ -1,4 +1,4 @@
-package com.edu.tree.red.black;
+package edu.tree.red.black;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

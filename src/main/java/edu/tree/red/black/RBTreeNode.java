@@ -1,4 +1,4 @@
-package com.edu.tree.red.black;
+package edu.tree.red.black;
 
 /**
  * @author xukai 红黑树

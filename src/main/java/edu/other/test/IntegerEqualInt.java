@@ -1,4 +1,4 @@
-package com.edu.other.test;
+package main.java.edu.other.test;
 
 /**
  * @author xukai
