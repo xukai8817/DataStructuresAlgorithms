@@ -22,8 +22,9 @@ public class DisplayRBTree extends JApplet {
 		for (int i = 0; i < array.length; i++) {
 			array[i] = (int) (Math.random() * 20);
 		}*/
-
-        Integer[] array = {11, 2, 14, 1, 7, 15, 5, 8};
+    // 26, 17, 41, 14, 21, 30, 47, 10, 16, 19, 23, 28, 38, 7, 12, 15, 20, 35, 39, 3 delete 7
+        Integer[] array =
+            {26, 17, 41, 14, 21, 30, 47, 10, 16, 19, 23, 28, 38, 7, 12, 15, 20, 35,39, 3};
         RBTree<Integer> tree = new RBTree<Integer>(array);
         System.out.println(tree);
         add(new RBTreeJPanel(new TreeView(tree)));

@@ -145,46 +145,73 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
     @Override
     public boolean delete(E e) {
         RBTreeNode<E> x, y, z;
-
+        // 1、获取需要删除的节点
         if ((y = z = find(e)) == null) {
             return false;
         }
-
+        // 2、记录删除节点的颜色
         boolean yRed = y.red;
 
+        // 3、判断删除节点的子节点
         if (z.left == null) {
             x = z.right;
-            rbTransplant(z, z.right);
+//            x = getNullNode(x, y);
+            x = rbTransplant(this.root, z, z.right);
         } else if (z.right == null) {
             x = z.left;
-            rbTransplant(z, z.left);
+//            x = getNullNode(x, y);
+            x = rbTransplant(this.root, z, z.left);
         } else {
+            // 4、z的后继节点替换z，着相同色
             y = this.getMinNode(z.right);
             yRed = y.red;
             x = y.right;
-            if (y.parent == z) {
-                // TODO
-                if (x != null) {
-                    x.parent = y;
-                }
-            } else {
-                rbTransplant(y, y.right);
+
+            // 4.1、z节点的后继节点不是z的右孩子
+            if (y.parent != z) {
+                x = rbTransplant(this.root, y, x);
+                // 连接z右孩子和y
                 y.right = z.right;
-                // TODO
-                if (y.right != null) {
-                    y.right.parent = y;
+                y.right.parent = y;
+            } else {
+                if (x == null) {
+                    x = createRBTreeNode(null);
                 }
+                x.parent = y;
             }
-            rbTransplant(z, y);
+//            x = getNullNode(x, y);
+
+            // 4.2、连接z的双亲和y
+            rbTransplant(this.root, z, y);
+            // 连接z左孩子和y
             y.left = z.left;
             y.left.parent = y;
             y.red = z.red;
         }
         if (!yRed) {
             root = this.balanceDeletion(root, x);
+        } else {
+            if (x.e == null) {
+                if (x.parent.left == x) {
+                    x.parent.left = null;
+                } else {
+                    x.parent.right = null;
+                }
+            }
         }
         size--;
         return true;
+    }
+
+    /**
+     * 获取空节点，关联双亲
+     */
+    private RBTreeNode<E> getNullNode(RBTreeNode<E> x, RBTreeNode parent) {
+        if (x == null) {
+            x = this.createRBTreeNode(null);
+            x.parent = parent;
+        }
+        return x;
     }
 
     /**
@@ -266,20 +293,21 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
 
     public <E> RBTreeNode<E> balanceDeletion(RBTreeNode<E> root, RBTreeNode<E> x) {
         for (RBTreeNode<E> xp, xpl, xpr; ; ) {
-            // x为空或根
-            if (x == null || x == root) {
-                return root;
-            } else if ((xp = x.parent) == null) {
+            if ((xp = x.parent) == null) {
                 // x为根结点
-                System.out.println("x=" + x.e + ",x为根结点");
                 x.red = false;
                 return x;
             } else if (x.red) {
                 // x为红色
+                x.red = false;
+                if (x.e == null) {
+                }
                 return root;
-            }
-            // x:left-child
-            else if ((xpl = xp.left) == x) {
+            } else if ((xpl = xp.left) == x) {
+                if (x.e == null) {
+                    xp.left = null;
+                }
+                // x:left-child
                 // x' brother is red
                 if ((xpr = xp.right) != null && xpr.red) {
                     xpr.red = false;
@@ -292,26 +320,25 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
                     x = xp;
                 } else {
                     // x' brother is black
-                    RBTreeNode<E> sl = xpr.left, sr = xpr.right;
-                    if ((sr == null || !sr.red) && (sl == null || !sl.red)) {
-                        // 侄结点同时为黑结点
+                    RBTreeNode<E> xprl = xpr.left, xprr = xpr.right;
+                    if ((xprr == null || !xprr.red) && (xprl == null || !xprl.red)) {
+                        // 侄结点不存在，或存在且黑色
                         xpr.red = true;
+                        x = xp;
                     } else {
-                        // 侄结点case
                         // 右侄子结点为空或为黑结点,case3
-                        if (sr == null || !sr.red) {
-                            if (sl != null) {
-                                sl.red = false;
+                        if (xprr == null || !xprr.red) {
+                            if (xprl != null) {
+                                xprl.red = false;
                             }
-
                             xpr.red = true;
                             root = rotateRight(root, xpr);
                             xpr = (xp = x.parent) == null ? null : xp.parent;
                         }
                         if (xpr != null) {
                             xpr.red = (xp == null) ? false : xp.red;
-                            if ((sr = xpr.right) != null) {
-                                sr.red = false;
+                            if ((xprr = xpr.right) != null) {
+                                xprr.red = false;
                             }
                         }
                         if (xp != null) {
@@ -321,9 +348,11 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
                         x = root;
                     }
                 }
-            }
-            // x:right-child
-            else {
+            } else {
+                // x:right-child
+                if (x.e == null) {
+                    xp.right = null;
+                }
                 if (xpl != null && xpl.red) {
                     xpl.red = false;
                     xp.red = true;
@@ -362,7 +391,6 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
                     }
                 }
             }
-
             return root;
         }
     }
@@ -370,7 +398,10 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
     /**
      * 用以newTree为根的树替换以oldTree为根的树,即连接oldTree.parent和newTree<br>
      */
-    private void rbTransplant(RBTreeNode<E> oldTree, RBTreeNode<E> newTree) {
+    private RBTreeNode<E> rbTransplant(RBTreeNode<E> root, RBTreeNode<E> oldTree, RBTreeNode<E> newTree) {
+        if (newTree == null) {
+            newTree = createRBTreeNode(null);
+        }
         if (oldTree.parent == null) {
             this.root = newTree;
         } else if (oldTree == oldTree.parent.left) {
@@ -378,14 +409,12 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
         } else {
             oldTree.parent.right = newTree;
         }
-
-        if (newTree != null) {
-            newTree.parent = oldTree.parent;
-        }
+        newTree.parent = oldTree.parent;
+        return newTree;
     }
 
     /**
-     * 获取该结点下最小结点
+     * 获取node的后继节点
      */
     public RBTreeNode<E> getMinNode(RBTreeNode<E> node) {
         RBTreeNode<E> minNode = node;
