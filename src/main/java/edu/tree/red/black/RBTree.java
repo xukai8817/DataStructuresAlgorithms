@@ -145,56 +145,55 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
     @Override
     public boolean delete(E e) {
         RBTreeNode<E> p, pl, pr, replacement;
-        // 1、判断节点是否存在
+        // 一、查找删除节点p
         if ((p = this.find(e)) == null) {
             return false;
         }
         pl = p.left;
         pr = p.right;
-        // 2、判断删除节点的子节点
+
+        // 二、判断p的子节点
         if (pl != null && pr != null) {
-            // 2.1、获取后继节点
+            // 1、p存在两个子节点
+
+            // 2、交换p和其后继节点s的位置和颜色
+
+            // 2.1、获取后继节点s
             RBTreeNode<E> s = pr, sl;
             while ((sl = s.left) != null) {
                 s = sl;
             }
 
-            // 2.2、交换p和s颜色
+            // 2.2、交换p和s的颜色
             boolean c = s.red;
             s.red = p.red;
             p.red = c;
 
-            // 记录
+            // 2.3、s是否为p的右子节点
             RBTreeNode<E> sr = s.right, pp = p.parent;
-
-            // 2.3、判断后继节点是否为直系子节点
             if (s == pr) {
+                // 2.3.1、s为p的右子节点，s存在为p的父节点
+                // 关联s节点的右子节点
                 p.parent = s;
                 s.right = p;
             } else {
-                // p关联s父节点
-                RBTreeNode<E> sp = s.parent;
-                if ((p.parent = sp) != null) {
-                    if (s == sp.left) {
-                        sp.left = p;
-                    } else {
-                        sp.right = p;
-                    }
-                }
-
-                // p的右子节点不为空,设置为s的右节点
-                if ((s.right = pr) != null) {
-                    pr.parent = s;
-                }
+                // 2.3.2、s不为p的右子节点，s存在不为p的父节点
+                // sp的左子节点关联p
+                p.parent = s.parent;
+                s.parent.left = p;
+                // 关联s节点的右子节点
+                s.right = pr;
+                pr.parent = s;
             }
-            p.left = null;
 
+            // 2.4、s的右子节点不为空，关联p
             if ((p.right = sr) != null) {
                 sr.parent = p;
             }
-            if ((s.left = pl) != null) {
-                pl.parent = s;
-            }
+
+            // 2.5、关联s和pl,pp、清空p的左子节点指针
+            s.left = pl;
+            pl.parent = s;
             if ((s.parent = pp) == null) {
                 root = s;
             } else if (p == pp.left) {
@@ -202,9 +201,14 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
             } else {
                 pp.right = s;
             }
+            p.left = null;
+
+            // 2.6、s节点是否存在右子节点
             if (sr != null) {
+                // 存在，使用该节点作为替换节点，步骤三中，清空p
                 replacement = sr;
             } else {
+                // 不存在，使用p作为替换节点
                 replacement = p;
             }
         } else if (pl != null) {
@@ -212,10 +216,12 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
         } else if (pr != null) {
             replacement = pr;
         } else {
+            // 删除节点为无子节点
             replacement = p;
         }
+        // 三、替换节点不为p时，删除p
         if (replacement != p) {
-            // 删除节点不存在子节点
+            // 删除节点存在子节点时，replacement替换p
             RBTreeNode<E> pp = replacement.parent = p.parent;
             if (pp == null) {
                 root = replacement;
@@ -226,11 +232,13 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
             }
             p.left = p.right = p.parent = null;
         }
-        // 3、重新着色
+        // 四、重新着色
         if (!p.red) {
             root = this.balanceDeletion(this.root, replacement);
         }
-        if (replacement == p) {  // detach
+        // 五、分离
+        if (replacement == p) {
+            // 双色节点为p时，与其父节点断开
             RBTreeNode<E> pp = p.parent;
             p.parent = null;
             if (pp != null) {
@@ -333,32 +341,39 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
                 x.red = false;
                 return root;
             } else if ((xpl = xp.left) == x) {
+                // x为左子节点
                 if ((xpr = xp.right) != null && xpr.red) {
+                    // x的兄弟节点存在，且是红色
                     xpr.red = false;
                     xp.red = true;
+                    // 通过旋转将x的兄弟节点换成黑色节点
                     root = rotateLeft(root, xp);
                     xpr = (xp = x.parent) == null ? null : xp.right;
                 }
                 if (xpr == null) {
+                    // 无兄弟节点，x向上传递
                     x = xp;
                 } else {
+                    // 兄弟节点s的子节点分析
                     RBTreeNode<E> sl = xpr.left, sr = xpr.right;
-                    if ((sr == null || !sr.red) &&
-                        (sl == null || !sl.red)) {
+                    if ((sr == null || !sr.red) && (sl == null || !sl.red)) {
+                        // case 1:s不存在子节点
+                        // case 2:s存在两个黑色子节点
                         xpr.red = true;
                         x = xp;
                     } else {
                         if (sr == null || !sr.red) {
-                            if (sl != null) {
-                                sl.red = false;
-                            }
+                            // s右孩子不存在或是黑色
+                            // 通过旋转将s的右孩子换成红色
+                            sl.red = false;
                             xpr.red = true;
                             root = rotateRight(root, xpr);
-                            xpr = (xp = x.parent) == null ?
-                                null : xp.right;
+                            xpr = (xp = x.parent) == null ? null : xp.right;
                         }
+
+                        // s的左孩子为红色，去掉额外黑色
                         if (xpr != null) {
-                            xpr.red = (xp == null) ? false : xp.red;
+                            xpr.red = xp.red;
                             if ((sr = xpr.right) != null) {
                                 sr.red = false;
                             }
@@ -367,10 +382,11 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
                             xp.red = false;
                             root = rotateLeft(root, xp);
                         }
+                        // 退出循环
                         x = root;
                     }
                 }
-            } else { // symmetric
+            } else {
                 if (xpl != null && xpl.red) {
                     xpl.red = false;
                     xp.red = true;
@@ -387,16 +403,14 @@ public class RBTree<E extends Comparable<E>> extends AbstractTree<E> {
                         x = xp;
                     } else {
                         if (sl == null || !sl.red) {
-                            if (sr != null) {
-                                sr.red = false;
-                            }
+                            sr.red = false;
                             xpl.red = true;
                             root = rotateLeft(root, xpl);
                             xpl = (xp = x.parent) == null ?
                                 null : xp.left;
                         }
                         if (xpl != null) {
-                            xpl.red = (xp == null) ? false : xp.red;
+                            xpl.red = xp.red;
                             if ((sl = xpl.left) != null) {
                                 sl.red = false;
                             }
