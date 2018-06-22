@@ -1,4 +1,7 @@
-package main.java.edu.other.test;
+package edu.other.test;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 
@@ -15,5 +18,8 @@ public class ORTest {
 			System.out.println(str2);
 		System.out.println(str1);
 		System.out.println(str2);
+		String content = "{\"data\":\"a" +String.valueOf((char)160) + "\nbc\"}";
+		JSONObject jsonObject = JSON.parseObject(content);
+		System.out.println(jsonObject);
 	}
 }
